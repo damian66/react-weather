@@ -5,10 +5,13 @@
   "author": "",
   "version": "1.0.0a",
   "license": "ISC",
+  "homepage": "https://damian66.github.io/react-weather/",
   "scripts": {
     "build": "webpack --config webpack.dev.js",
     "start": "webpack-dev-server --inline --color --config webpack.dev.js",
-    "build-prod": "webpack --config webpack.prod.js"
+    "build-prod": "webpack --config webpack.prod.js",
+    "predeploy": "npm run build-prod",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^16.2.0",
@@ -28,6 +31,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
     "extract-text-webpack-plugin": "^3.0.2",
+    "gh-pages": "^1.1.0",
     "html-webpack-plugin": "^2.30.1",
     "node-sass": "^4.7.2",
     "sass-loader": "^6.0.6",

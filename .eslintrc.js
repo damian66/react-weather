@@ -4,6 +4,7 @@ module.exports = {
     "quotes": ["error", "single", {
       "avoidEscape": true      
     }],
+    "no-console": 0,
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": false, "peerDependencies": false}],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-no-bind": {      

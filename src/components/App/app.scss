@@ -8,6 +8,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  background: #FFFFFF;
 
   &:before {
     content: '';
@@ -16,6 +17,58 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    box-shadow: 0 0 20px #F0F2F4;
+    box-shadow: 0 0 20px #CFD8DC;
+  }
+}
+
+.wrapper {
+  text-align: center;
+  padding: 30% 0;
+
+  .city {
+    font-size: 2em;
+  }
+
+  .tempWrapper {    
+    position: relative;
+    margin-top: .5em;
+    .temp {
+      font-size: 6em;
+    }
+    .unit {
+      height: 100%;
+      font-size: 1.5em;
+      vertical-align: top;
+      display: inline-block;
+      margin-top: .75em;
+      margin-left: 8px;
+    }      
+  }
+
+  .date,
+  .quote {
+    margin: 3em auto 4em auto;
+  }
+
+  .quote {    
+    width: 80%; 
+    font-style: italic;
+
+    p {
+      margin: 0;
+    }    
+    .quoteContent {      
+      font-size: 1.5em;
+    }
+    .quoteAuthor {
+      margin-top: 1em;
+      display: block;
+      text-align: right;
+
+      &:before {
+        content: '~';
+        margin-right: 0.25em;
+      }
+    }
   }
 }
