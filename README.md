@@ -2,7 +2,7 @@
 
 Simple Weather app made with love using ReactJS.
 
-[Demo](https://damian66.github.io/react-weather/)
+[Demo](www.react-weather.ga) (quote-fetching service is not working in demo)
 
 
 ## Built with

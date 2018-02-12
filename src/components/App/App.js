@@ -19,7 +19,10 @@ class App extends React.Component {
           temp: 273.15,
         },
       },
-      quote: {},
+      quote: {
+        content: 'Never half-ass two things. Whole-ass one thing.',
+        author: 'Ron Swanson',
+      },
     };
 
     this.loadGeolocation.bind(this)();
