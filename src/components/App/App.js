@@ -7,6 +7,8 @@ import geolocation from './../../services/geolocation';
 import weather from './../../services/weather';
 import quotes from './../../services/quotes';
 
+import Drawer from './../Drawer';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -15,6 +17,8 @@ class App extends React.Component {
       location: {
         city: 'Katowice',
       },
+      cities: [],
+      activeCity: -1,
       weather: {
         main: {
           temp: 273.15,
@@ -24,6 +28,7 @@ class App extends React.Component {
         content: 'Never half-ass two things. Whole-ass one thing.',
         author: 'Ron Swanson',
       },
+      drawerOpened: true,
     };
 
     this.loadGeolocation.bind(this)();
@@ -39,6 +44,7 @@ class App extends React.Component {
       temp = 0;
     }
     const hue = (80 - (temp / 80)) * 255;
+
     return converter(hue, 40, 50);
   }
 
@@ -86,14 +92,14 @@ class App extends React.Component {
     // Temporary object
     const tmp = quote;
     // Remove HTML tags
-    let content = tmp.content.replace(/<(?:.|\n)*?>/g, '');    
+    let content = tmp.content.replace(/<(?:.|\n)*?>/g, '');
     // Pattern to match hex character codes
     const regex = new RegExp('&#([0-9]+);', 'g');
     // Iterate over matches
-    let match = regex.exec(content);    
+    let match = regex.exec(content);
     while (match) {
       // Replace hex char code with ascii character
-      content = content.replace(match[0], String.fromCharCode(match[1]));      
+      content = content.replace(match[0], String.fromCharCode(match[1]));
       match = regex.exec(content);
     }
 
@@ -120,10 +126,25 @@ class App extends React.Component {
     });
   }
 
+  drawerToggle() {
+    this.setState({
+      drawerOpened: !this.state.drawerOpened,
+    });
+  }
+
   render() {
+    this.state.cities[0] = this.state.location;
+
+    let wrapperClass = style.wrapper;
+    wrapperClass += this.state.drawerOpened ? ` ${style.blurred}` : '';
+
+    let shaderClass = style.shader;
+    shaderClass += this.state.drawerOpened ? ` ${style.shaderVisible}` : '';
+
     return (
       <div className={style.app} style={{ background: this.generateBackground.bind(this)() }}>
-        <div className={style.wrapper}>
+        <div className={shaderClass} />
+        <div className={wrapperClass}>
           <div className={style.city}>{this.state.location.city}</div>
           <div className={style.tempWrapper}>
             <span className={style.temp}>
@@ -139,6 +160,12 @@ class App extends React.Component {
             <p className={style.quoteAuthor}>{this.state.quote.author}</p>
           </div>
         </div>
+        <Drawer
+          cities={this.state.cities}
+          activeCity={this.state.activeCity}
+          onToggle={this.drawerToggle.bind(this)}
+          opened={this.state.drawerOpened}
+        />
       </div>
     );
   }

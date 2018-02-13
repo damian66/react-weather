@@ -5,6 +5,7 @@ module.exports = {
       "avoidEscape": true      
     }],
     "no-console": 0,
+    "max-len": 1,
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": false, "peerDependencies": false}],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-no-bind": {      

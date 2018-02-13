@@ -6,6 +6,7 @@ Simple Weather app made with love using ReactJS.
 
 ### TODO
 * Handle too long quotes
+* Add weather
 * Optimize app design
 * Add weather icons
 * Add bottom drawer with ability to change cities
