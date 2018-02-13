@@ -8,8 +8,8 @@ $burgerWidth: 1.5em;
   background: white;
   width: 100%;  
   text-align: center; 
-  height: 0;  
-  transition: height .2s cubic-bezier(0.4, 0.0, 0.2, 1);  
+  max-height: 0;
+  transition: max-height .2s cubic-bezier(0.4, 0.0, 0.2, 1);  
 }
 
 .burgerIconWrapper {
@@ -19,6 +19,7 @@ $burgerWidth: 1.5em;
   padding-top: .75em;
   box-sizing: border-box;
   transition: transform .2s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition-delay: .1s;
   cursor: pointer;
 
   .burgerIcon {
@@ -63,8 +64,7 @@ $burgerWidth: 1.5em;
 
 ul {
   margin: 0;
-  padding: 1.5em 0;
-  padding-top: 3.5em;  
+  padding: 1.25em 0;  
   list-style-type: none;      
   box-sizing: border-box;  
   overflow: hidden;
@@ -73,6 +73,7 @@ ul {
     color: #566d77;
     font-size: 1.25em;
     padding: .375em;        
+    cursor: pointer;
 
     .locationIcon {
       width: .75em;
@@ -80,13 +81,13 @@ ul {
       transform: translate(-100%, 3px);
       margin-left: -12px;
       fill: #566d77;
-      opacity: .5;
+      opacity: .4;
     }
   }
 }
 
 .opened {
-  height: 200px;
+  max-height: 100%;
 
   .burgerIconWrapper {
     transform: translateY(0em);

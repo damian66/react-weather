@@ -3,9 +3,7 @@ import converter from 'hsl-to-hex';
 
 import style from './app.scss';
 
-import geolocation from './../../services/geolocation';
-import weather from './../../services/weather';
-import quotes from './../../services/quotes';
+import { loadGeolocation, loadWeather, loadQuote } from './LoadData';
 
 import Drawer from './../Drawer';
 
@@ -17,8 +15,8 @@ class App extends React.Component {
       location: {
         city: 'Katowice',
       },
-      cities: [],
-      activeCity: -1,
+      cities: [{}],
+      activeCity: 0,
       weather: {
         main: {
           temp: 273.15,
@@ -28,11 +26,37 @@ class App extends React.Component {
         content: 'Never half-ass two things. Whole-ass one thing.',
         author: 'Ron Swanson',
       },
-      drawerOpened: true,
+      drawerOpened: false,
     };
 
-    this.loadGeolocation.bind(this)();
-    this.loadQuote.bind(this)();
+    loadGeolocation(this, () => {
+      loadWeather(this);
+    });
+    loadQuote(this, (quote) => {
+      if (quote && quote.length > 0) {
+        this.saveQuote({
+          content: quote[0].content,
+          author: quote[0].title,
+        });
+      }
+    });
+
+    this.setState({
+      cities: this.state.cities.push(
+        {
+          city: 'Warszawa',
+          lat: 52.232855,
+          lon: 20.9211133,
+          key: new Date().getTime(),
+        },
+        {
+          city: 'Katowice',
+          lat: 52.232855,
+          lon: 20.9211133,
+          key: new Date().getTime(),
+        },
+      ),
+    });
   }
 
   generateBackground() {
@@ -46,45 +70,6 @@ class App extends React.Component {
     const hue = (80 - (temp / 80)) * 255;
 
     return converter(hue, 40, 50);
-  }
-
-  loadGeolocation() {
-    geolocation((err, res) => {
-      if (err) {
-        console.error('Geolocation service error', err);
-        this.setState({
-          location: {
-            city: 'Warszawa',
-            lat: 52.232855,
-            lon: 20.9211133,
-          },
-        });
-        this.loadWeather.bind(this)();
-        return;
-      }
-      this.setState({
-        location: res,
-      });
-      this.loadWeather.bind(this)();
-    });
-  }
-
-  loadWeather() {
-    weather(
-      { lat: this.state.location.lat, lon: this.state.location.lon },
-      (err, res) => {
-        if (err) {
-          console.error('Weather service error', err);
-          // this.setState({
-          //   weather: {}
-          // });
-          return;
-        }
-        this.setState({
-          weather: res,
-        });
-      },
-    );
   }
 
   // Remove HTML tags and convert hex chars to ASCII
@@ -110,26 +95,25 @@ class App extends React.Component {
     });
   }
 
-  loadQuote() {
-    quotes((err, quote) => {
-      if (err) {
-        console.error('Quote service error', err);
-        return;
-      }
-
-      if (quote && quote.length > 0) {
-        this.saveQuote({
-          content: quote[0].content,
-          author: quote[0].title,
-        });
-      }
-    });
-  }
-
-  drawerToggle() {
+  toggleDrawer() {
     this.setState({
       drawerOpened: !this.state.drawerOpened,
     });
+  }
+
+  hideDrawer() {
+    this.setState({
+      drawerOpened: false,
+    });
+  }
+
+  changeCity(index) {
+    this.setState({
+      activeCity: index,
+    }, () => {
+      loadWeather(this);
+    });
+    this.hideDrawer.bind(this)();
   }
 
   render() {
@@ -143,12 +127,12 @@ class App extends React.Component {
 
     return (
       <div className={style.app} style={{ background: this.generateBackground.bind(this)() }}>
-        <div className={shaderClass} />
+        <div className={shaderClass} onClick={this.hideDrawer.bind(this)} />
         <div className={wrapperClass}>
-          <div className={style.city}>{this.state.location.city}</div>
+          <div className={style.city}>{this.state.cities[this.state.activeCity].city}</div>
           <div className={style.tempWrapper}>
             <span className={style.temp}>
-              { Math.round(this.state.weather.main.temp - 273.15)}
+              { Math.round(this.state.weather.main.temp - 273.15) }
             </span>
             <span className={style.unit}>°C</span>
           </div>
@@ -163,7 +147,8 @@ class App extends React.Component {
         <Drawer
           cities={this.state.cities}
           activeCity={this.state.activeCity}
-          onToggle={this.drawerToggle.bind(this)}
+          onToggle={this.toggleDrawer.bind(this)}
+          onChangeCity={this.changeCity.bind(this)}
           opened={this.state.drawerOpened}
         />
       </div>
