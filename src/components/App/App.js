@@ -1,4 +1,5 @@
 import React from 'react';
+import converter from 'hsl-to-hex';
 
 import style from './app.scss';
 
@@ -27,6 +28,18 @@ class App extends React.Component {
 
     this.loadGeolocation.bind(this)();
     this.loadQuote.bind(this)();
+  }
+
+  generateBackground() {
+    let temp = (this.state.weather.main.temp + 40) - 273.15;
+    if (temp > 80) {
+      temp = 80;
+    } else
+    if (temp < 0) {
+      temp = 0;
+    }
+    const hue = (80 - (temp / 80)) * 255;
+    return converter(hue, 40, 50);
   }
 
   loadGeolocation() {
@@ -61,12 +74,34 @@ class App extends React.Component {
           // });
           return;
         }
-        console.log(res);
         this.setState({
           weather: res,
         });
       },
     );
+  }
+
+  // Remove HTML tags and convert hex chars to ASCII
+  saveQuote(quote) {
+    // Temporary object
+    const tmp = quote;
+    // Remove HTML tags
+    let content = tmp.content.replace(/<(?:.|\n)*?>/g, '');    
+    // Pattern to match hex character codes
+    const regex = new RegExp('&#([0-9]+);', 'g');
+    // Iterate over matches
+    let match = regex.exec(content);    
+    while (match) {
+      // Replace hex char code with ascii character
+      content = content.replace(match[0], String.fromCharCode(match[1]));      
+      match = regex.exec(content);
+    }
+
+    // Set updated content
+    tmp.content = content;
+    this.setState({
+      quote: tmp,
+    });
   }
 
   loadQuote() {
@@ -77,11 +112,9 @@ class App extends React.Component {
       }
 
       if (quote && quote.length > 0) {
-        this.setState({
-          quote: {
-            content: quote[0].content.replace(/<(?:.|\n)*?>/g, ''),
-            author: quote[0].title,
-          },
+        this.saveQuote({
+          content: quote[0].content,
+          author: quote[0].title,
         });
       }
     });
@@ -89,7 +122,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className={style.app}>
+      <div className={style.app} style={{ background: this.generateBackground.bind(this)() }}>
         <div className={style.wrapper}>
           <div className={style.city}>{this.state.location.city}</div>
           <div className={style.tempWrapper}>

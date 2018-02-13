@@ -4,6 +4,11 @@ Simple Weather app made with love using ReactJS.
 
 [Demo](http://www.react-weather.ga) (quote-fetching service is not working in demo)
 
+### TODO
+* Handle too long quotes
+* Optimize app design
+* Add weather icons
+* Add bottom drawer with ability to change cities
 
 ## Built with
 
