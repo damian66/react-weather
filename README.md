@@ -2,7 +2,7 @@
 
 Simple Weather app made with love using ReactJS.
 
-[Demo](http://www.react-weather.ga) (quote-fetching service is not working in demo)
+[Demo](https://damian66.github.io/react-weather/) (geolocation service loads data from another location in demo. It is needed to fix CORS issue with APIs)
 
 ### TODO
 * Handle too long quotes

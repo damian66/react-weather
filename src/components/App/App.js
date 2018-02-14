@@ -13,7 +13,7 @@ class App extends React.Component {
 
     this.state = {
       location: {
-        city: 'Katowice',
+        city: '',
       },
       cities: [{}],
       activeCity: 0,
