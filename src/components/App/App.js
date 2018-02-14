@@ -19,14 +19,15 @@ class App extends React.Component {
       activeCity: 0,
       weather: {
         main: {
-          temp: 273.15,
+          temp: -1,
         },
       },
       quote: {
-        content: 'Never half-ass two things. Whole-ass one thing.',
-        author: 'Ron Swanson',
+        content: '',
+        author: '',
       },
       drawerOpened: false,
+      formVisible: false,
     };
 
     loadGeolocation(this, () => {
@@ -40,34 +41,20 @@ class App extends React.Component {
         });
       }
     });
-
-    this.setState({
-      cities: this.state.cities.push(
-        {
-          city: 'Warszawa',
-          lat: 52.232855,
-          lon: 20.9211133,
-          key: new Date().getTime(),
-        },
-        {
-          city: 'Katowice',
-          lat: 52.232855,
-          lon: 20.9211133,
-          key: new Date().getTime(),
-        },
-      ),
-    });
   }
 
   generateBackground() {
-    let temp = (this.state.weather.main.temp + 40) - 273.15;
-    if (temp > 80) {
-      temp = 80;
+    if (this.state.weather.main.temp === -1) {
+      return '#78909C';
+    }
+    let temp = (this.state.weather.main.temp + 20) - 273.15;
+    if (temp > 40) {
+      temp = 40;
     } else
     if (temp < 0) {
       temp = 0;
     }
-    const hue = (80 - (temp / 80)) * 255;
+    const hue = (80 - (temp / 40)) * 255;
 
     return converter(hue, 40, 50);
   }
@@ -98,22 +85,53 @@ class App extends React.Component {
   toggleDrawer() {
     this.setState({
       drawerOpened: !this.state.drawerOpened,
+      formVisible: false,
     });
   }
 
   hideDrawer() {
     this.setState({
       drawerOpened: false,
+      formVisible: false,
     });
   }
 
-  changeCity(index) {
+  changeCity(index, hide = true) {
     this.setState({
-      activeCity: index,
+      activeCity: parseInt(index, 0),
     }, () => {
-      loadWeather(this);
+      loadWeather(this, () => {
+        this.setState({
+          weather: this.state.cities[index].weather,
+        });
+      });
     });
-    this.hideDrawer.bind(this)();
+
+    if (hide) {
+      this.hideDrawer.bind(this)();
+    }
+  }
+
+  addCity(city) {
+    this.state.cities.push(city);
+    this.setState({
+      cities: this.state.cities,
+    });
+  }
+
+  deleteCity(index) {
+    this.state.cities.splice(index, 1);
+
+    const city = this.state.activeCity === parseInt(index, 0) ?
+      this.state.activeCity - 1 :
+      this.state.activeCity;
+
+    this.setState({
+      cities: this.state.cities,
+      activeCity: city,
+    });
+
+    this.changeCity(city, false);
   }
 
   render() {
@@ -125,31 +143,55 @@ class App extends React.Component {
     let shaderClass = style.shader;
     shaderClass += this.state.drawerOpened ? ` ${style.shaderVisible}` : '';
 
+    const activeCity = this.state.cities.length > this.state.activeCity ?
+      this.state.activeCity :
+      0;
+    const city = this.state.cities[activeCity];
+
+    const months = [
+      'styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec',
+      'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień',
+    ];
+    const days = [
+      'niedziela', 'poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota',
+    ];
+    const dateObj = new Date();
+    const date = `${days[dateObj.getDay()].charAt(0).toUpperCase() + days[dateObj.getDay()].slice(1)}` +
+      `, ${dateObj.getDay()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+
+    const temp = this.state.weather.main.temp >= 0 ?
+      Math.round(this.state.weather.main.temp - 273.15) :
+      0;
+
     return (
       <div className={style.app} style={{ background: this.generateBackground.bind(this)() }}>
         <div className={shaderClass} onClick={this.hideDrawer.bind(this)} />
-        <div className={wrapperClass}>
-          <div className={style.city}>{this.state.cities[this.state.activeCity].city}</div>
-          <div className={style.tempWrapper}>
+        <ul className={wrapperClass}>
+          <li className={style.city}>{city.city}</li>
+          <li className={style.tempWrapper}>
             <span className={style.temp}>
-              { Math.round(this.state.weather.main.temp - 273.15) }
+              {temp}
             </span>
             <span className={style.unit}>°C</span>
-          </div>
-          <div className={style.date}>
-            Środa, 26 luty 2018
-          </div>
-          <div className={style.quote}>
+          </li>
+          <li className={style.date}>
+            {date}
+          </li>
+          <li className={style.quote}>
             <p className={style.quoteContent}>{this.state.quote.content}</p>
             <p className={style.quoteAuthor}>{this.state.quote.author}</p>
-          </div>
-        </div>
+          </li>
+        </ul>
         <Drawer
           cities={this.state.cities}
           activeCity={this.state.activeCity}
+          formVisible={this.state.formVisible}
           onToggle={this.toggleDrawer.bind(this)}
           onChangeCity={this.changeCity.bind(this)}
+          onAddCity={this.addCity.bind(this)}
+          onDeleteCity={this.deleteCity.bind(this)}
           opened={this.state.drawerOpened}
+          color={this.generateBackground.bind(this)()}
         />
       </div>
     );

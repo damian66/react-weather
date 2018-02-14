@@ -37,8 +37,15 @@ export function loadGeolocation(context, callback) {
 }
 
 export function loadWeather(context, callback) {
+  const city = context.state.cities[context.state.activeCity];
+  if (city.weather) {
+    if (callback) {
+      callback.bind(context)();
+    }
+    return;
+  }
   weather(
-    { lat: context.state.cities[context.state.activeCity].lat, lon: context.state.cities[context.state.activeCity].lon },
+    city,
     (err, res) => {
       if (err) {
         console.error('Weather service error', err);
@@ -50,6 +57,8 @@ export function loadWeather(context, callback) {
       context.setState({
         weather: res,
       });
+      city.weather = res;
+
       if (callback) {
         callback.bind(context)();
       }
