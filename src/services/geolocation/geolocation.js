@@ -1,3 +1,4 @@
+// https://cors-anywhere.herokuapp.com/
 export default function geolocation(callback) {
   fetch('http://ip-api.com/json')
     .then(res => res.json())

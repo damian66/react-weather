@@ -4,6 +4,7 @@ import converter from 'hsl-to-hex';
 import style from './app.scss';
 
 import { loadGeolocation, loadWeather, loadQuote } from './LoadData';
+import Icon from './../Icon';
 
 import Drawer from './../Drawer';
 
@@ -165,6 +166,9 @@ class App extends React.Component {
 
     return (
       <div className={style.app} style={{ background: this.generateBackground.bind(this)() }}>
+        <Icon
+          weather={this.state.weather}
+        />
         <div className={shaderClass} onClick={this.hideDrawer.bind(this)} />
         <ul className={wrapperClass}>
           <li className={style.city}>{city.city}</li>

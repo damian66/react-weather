@@ -1,0 +1,102 @@
+.icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translate(30%, -30%);
+}
+
+// #
+// # SUN
+// #
+@mixin sun-box-shadow($moveFirst, $moveSecond) {
+  box-shadow: 
+    0 0 0 1em + $moveFirst rgba(255, 215, 0, .5),
+    0 0 .75em + $moveFirst 2em rgba(255, 215, 0, .35),
+    0 0 0 2em + $moveSecond rgba(255, 215, 0, .25),
+    0 0 .75em + $moveSecond 3em rgba(255, 215, 0, .15);
+}
+.sun {
+  width: 10em;
+  height: 10em;
+  background: #FFCA00;
+  border-radius: 5em;
+
+  @include sun-box-shadow(0, 0);
+    
+  animation: sun 5s ease-in-out infinite;
+}
+
+@keyframes sun {
+  from {
+    @include sun-box-shadow(0, 0);
+  }
+  30% {
+    @include sun-box-shadow(.3em, .5em);
+  }
+  60% {
+    @include sun-box-shadow(.15em, .3em);
+  }
+  100% {
+    @include sun-box-shadow(0, 0);
+  }
+}
+
+@mixin moon-crater-shadow($amount) {
+  box-shadow: inset $amount $amount 0 0 rgba(0, 0, 0, .1);
+}
+
+// #
+// # MOON
+// #
+.moon {
+  width: 7.5em;
+  height: 7.5em;
+  background: #CFD8DC;
+  border-radius: 3.75em;
+  position: relative;
+  
+  box-shadow: 
+    0 0 5em 1em rgba(207, 216, 220, .75),
+    inset -1em -1em 0 0 rgba(0, 0, 0, .05);
+
+  div {
+    width: 1em;
+    height: 1em;
+    background: #8AA1AC;
+    border-radius: .5em;
+    position: absolute;
+
+    &:nth-of-type(1) {
+      left: 1em;
+      top: 2em;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: .75em;
+      @include moon-crater-shadow(.25em);
+    }
+    &:nth-of-type(2) {
+      left: 4em;
+      top: 4em;
+      width: .5em;
+      height: .5em;
+      border-radius: .25em;
+      @include moon-crater-shadow(.05em);
+    }
+    &:nth-of-type(3) {
+      left: 1.5em;
+      top: 5.5em;
+      width: .75em;
+      height: .75em;
+      border-radius: .375em;
+      @include moon-crater-shadow(.15em);
+    }
+    &:nth-of-type(4) {
+      left: 4.5em;
+      top: 6em;
+      width: 1em;
+      height: 1em;
+      border-radius: .5em;
+      @include moon-crater-shadow(.2em);
+    }
+  }
+}

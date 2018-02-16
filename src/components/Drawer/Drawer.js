@@ -11,12 +11,14 @@ class Drawer extends React.Component {
     this.state = {
       formVisible: this.props.formVisible ? this.props.formVisible : false,
       formClass: style.form,
+      error: '',
     };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
       formVisible: props.formVisible,
+      error: '',
       formClass: style.form,
     });
   }
@@ -66,6 +68,7 @@ class Drawer extends React.Component {
     this.setState({
       formVisible: !this.state.formVisible,
       formClass: style.form,
+      error: '',
     }, () => {
       if (this.state.formVisible) {
         setTimeout(() => {
@@ -81,26 +84,40 @@ class Drawer extends React.Component {
     });
   }
 
+  addCityErrorHandler(error) {
+    this.setState({
+      error,
+    });
+  }
+
   addCity(query) {
+    this.setState({
+      error: '',
+    });
+
     if (query.replace(/ /g, '') === '' || query.length < 3) {
       return;
     }
-    cities(query, (err, res) => {
-      if (!res) return;
-      const result = res.results[0];
-      const cityName = result.address_components.filter(i => i.types[0] === 'locality' || i.types[1] === 'locality')[0].long_name;
+    cities(query)
+      .then((data) => {
+        if (!data.results.length) {
+          this.addCityErrorHandler.bind(this)('Did not found any results');
+          return;
+        }
 
-      this.props.onAddCity({
-        city: cityName,
-        lat: result.geometry.location.lat,
-        lon: result.geometry.location.lng,
-        key: new Date().getTime(),
-      });
+        const result = data.results[0];
+        const cityName = result.address_components.filter(i => i.types[0] === 'locality' || i.types[1] === 'locality')[0].long_name;
 
-      this.setState({
-        formVisible: false,
+        this.props.onAddCity({
+          city: cityName,
+          lat: result.geometry.location.lat,
+          lon: result.geometry.location.lng,
+          key: new Date().getTime(),
+        });
+      })
+      .catch((error) => {
+        this.addCityErrorHandler.bind(this)(error);
       });
-    });
   }
 
   changeCity(e) {
@@ -135,6 +152,9 @@ class Drawer extends React.Component {
     addIconClass += this.state.formVisible ? ` ${style.addForm}` : '';
     addIconClass += this.props.cities.length >= 5 ? ` ${style.addIconHidden}` : '';
 
+    let errorClass = style.errorHandler;
+    errorClass += this.state.error ? ` ${style.errorHandlerVisible}` : '';
+
     return (
       <React.Fragment>
         <div className={containerClass}>
@@ -146,6 +166,9 @@ class Drawer extends React.Component {
             style={{ background: this.props.color }}
             onClick={this.addIconClick.bind(this)}
           >
+            <div className={errorClass}>
+              {this.state.error}
+            </div>
             <div className={style.addIcon} />
             <div className={this.state.formClass}>
               <input
