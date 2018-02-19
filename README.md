@@ -6,8 +6,7 @@ Simple Weather app made with love using ReactJS.
 
 ### TODO
 * Handle too long quotes
-* Add weather icons
-* Add feedback for adding cities form
+* Change icon datetime (day / night) to local
 
 ## Built with
 

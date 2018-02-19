@@ -2,7 +2,8 @@
   position: absolute;
   right: 0;
   top: 0;
-  transform: translate(30%, -30%);
+  transform: translate(15%, -15%);
+  pointer-events: none;
 }
 
 // #
@@ -49,11 +50,12 @@
 // # MOON
 // #
 .moon {
-  width: 7.5em;
-  height: 7.5em;
+  width: 10em;
+  height: 10em;
   background: #CFD8DC;
-  border-radius: 3.75em;
+  border-radius: 5em;
   position: relative;
+  zoom: .75;
   
   box-shadow: 
     0 0 5em 1em rgba(207, 216, 220, .75),
@@ -67,36 +69,107 @@
     position: absolute;
 
     &:nth-of-type(1) {
-      left: 1em;
-      top: 2em;
+      left: 2em;
+      top: 3em;
       width: 1.5em;
       height: 1.5em;
       border-radius: .75em;
       @include moon-crater-shadow(.25em);
     }
     &:nth-of-type(2) {
-      left: 4em;
-      top: 4em;
+      left: 5em;
+      top: 5em;
       width: .5em;
       height: .5em;
       border-radius: .25em;
       @include moon-crater-shadow(.05em);
     }
     &:nth-of-type(3) {
-      left: 1.5em;
-      top: 5.5em;
+      left: 2.5em;
+      top: 6.5em;
       width: .75em;
       height: .75em;
       border-radius: .375em;
       @include moon-crater-shadow(.15em);
     }
     &:nth-of-type(4) {
-      left: 4.5em;
-      top: 6em;
+      left: 5.5em;
+      top: 7em;
       width: 1em;
       height: 1em;
       border-radius: .5em;
       @include moon-crater-shadow(.2em);
+    }
+  }
+}
+
+// #
+// # Rain
+// #
+.rain {
+  width: 10em;
+  height: 10em;
+  margin-top: -30%;
+
+  div {
+    position: absolute;
+    background: aqua;
+    width: 1px;
+    height: 12px;
+    opacity: .5;
+    transform: translateZ(0);
+
+    &:nth-of-type(odd) {
+      animation: rain-drop 0.6s linear infinite;
+    }
+    &:nth-of-type(even) {
+      animation: rain-drop 0.75s linear infinite;
+    }
+  }
+  @keyframes rain-drop {
+    from {
+      margin-top: -30%;
+      opacity: .5;
+    }
+    to {
+      margin-top: 50%;
+      opacity: .2;
+    }
+  }
+}
+
+// #
+// # Snow
+// #
+.snow {
+  width: 10em;
+  height: 10em;
+  margin-top: -30%;
+
+  div {
+    position: absolute;
+    background: #FFFFFF;
+    width: 3px;
+    height: 3px;
+    opacity: .8;
+    transform: translateZ(0);
+    border-radius: 1.5px;
+
+    &:nth-of-type(odd) {
+      animation: snow-flake 1.2s linear infinite;
+    }
+    &:nth-of-type(even) {
+      animation: snow-flake 1.5s linear infinite;
+    }
+  }
+  @keyframes snow-flake {
+    from {
+      margin-top: -30%;
+      opacity: .8;
+    }
+    to {
+      margin-top: 50%;
+      opacity: .4;
     }
   }
 }
